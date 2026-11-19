@@ -1,0 +1,96 @@
+.group-card {
+    --group-purple: #6b3fa0;
+    --group-purple-dark: #532a82;
+    --group-border: #b8a6c9;
+    --group-divider: #e8def0;
+    padding: 24px 32px 32px;
+    background: #fff;
+    color: #28212f;
+}
+
+    .group-card h1 {
+        margin: 0 0 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--group-divider);
+        color: var(--group-purple-dark);
+        font-size: clamp(1.75rem, 3vw, 2.25rem);
+        font-weight: 700;
+    }
+
+.group-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+}
+
+.group-field {
+    display: grid;
+    gap: 8px;
+}
+
+    .group-field label {
+        font-weight: 600;
+    }
+
+    .group-field select + label {
+        margin-top: 6px;
+    }
+
+    .group-field :is(input, textarea, select) {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0.65rem 0.8rem;
+        border: 1px solid var(--group-border);
+        border-radius: 8px;
+        background: #fff;
+        color: inherit;
+        font: inherit;
+    }
+
+    .group-field .group-short {
+        max-width: 340px;
+    }
+
+    .group-field textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .group-field :is(input, textarea, select):focus-visible,
+    .group-actions button:focus-visible {
+        outline: 2px solid var(--group-purple);
+        outline-offset: 2px;
+    }
+
+.group-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 16px;
+    border-top: 1px solid var(--group-divider);
+}
+
+    .group-actions button {
+        padding: 0.65rem 1.25rem;
+        border: 1px solid var(--group-purple);
+        border-radius: 8px;
+        background: var(--group-purple);
+        color: #fff;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .group-actions button:hover {
+            border-color: var(--group-purple-dark);
+            background: var(--group-purple-dark);
+        }
+
+@media (max-width: 576px) {
+    .group-card {
+        padding-inline: 16px;
+    }
+
+    .group-field .group-short {
+        max-width: none;
+    }
+}

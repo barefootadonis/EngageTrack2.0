@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Create Group";
+    ViewData["FullWidth"] = true;
+}
+
+<section class="group-card">
+    <h1>Group Creation Form</h1>
+
+    <form class="group-form">
+        <div class="group-field">
+            <label for="groupName">Group Name</label>
+            <input id="groupName" name="GroupName"
+                   class="group-short" type="text" required />
+        </div>
+
+        <div class="group-field">
+            <label for="projectSummary">Project Summary</label>
+            <textarea id="projectSummary" name="ProjectSummary" rows="4"></textarea>
+        </div>
+
+        <div class="group-field">
+            <label for="member">Group Members</label>
+            <select id="member" class="group-short">
+                <option value="">Select a member</option>
+                <option value="1">Alex Morgan</option>
+                <option value="2">Sam Patel</option>
+            </select>
+
+            <label for="projectRole">Project Role</label>
+            <input id="projectRole" class="group-short" type="text"
+                   placeholder="e.g. Developer" />
+        </div>
+
+        <div class="group-field">
+            <label for="supervisor">Project Supervisor</label>
+            <select id="supervisor" name="SupervisorId" class="group-short">
+                <option value="">Select a supervisor</option>
+                <option value="1">Dr Taylor</option>
+            </select>
+        </div>
+
+        <div class="group-actions">
+            <button type="button">Create Group</button>
+        </div>
+    </form>
+</section>

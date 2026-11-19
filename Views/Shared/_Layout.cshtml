@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EngageTrack</title>
+    <link rel="stylesheet" href="_Layout.cshtml.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EngageTrack.styles.css" asp-append-version="true" />
+</head>
+<body class="site-shell">
+    <header class="site-header">
+        <nav class="navbar navbar-expand-sm"
+             aria-label="Main navigation">
+            <div class="container-fluid site-gutter">
+                <a class="navbar-brand"
+                   asp-controller="Home" asp-action="Index">
+                    EngageTrack
+                </a>
+
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavigation"
+                        aria-controls="mainNavigation"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavigation">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Home" asp-action="Privacy">Student Profile</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="site-main @(ViewData["FullWidth"] is true ? "" : "container")">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer-inner site-gutter">
+            <span>&copy; 2026 EngageTrack</span>
+            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

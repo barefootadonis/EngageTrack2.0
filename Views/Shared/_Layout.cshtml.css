@@ -1,0 +1,75 @@
+﻿.site-shell {
+    --site-purple: #532a82;
+    --site-purple-light: #f7f3fb;
+    --site-border: #e7ddee;
+    --site-gutter: 32px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    background: #fff;
+    color: #202020;
+}
+
+.site-gutter {
+    padding-inline: var(--site-gutter);
+}
+
+.site-header,
+.site-footer {
+    background: var(--site-purple-light);
+}
+
+.site-header {
+    border-bottom: 1px solid var(--site-border);
+}
+
+    .site-header .navbar-brand {
+        color: var(--site-purple);
+        font-weight: 700;
+    }
+
+    .site-header .nav-link,
+    .site-footer a {
+        color: var(--site-purple);
+    }
+
+        .site-header .nav-link:hover,
+        .site-footer a:hover {
+            color: var(--site-purple);
+            text-decoration: underline;
+        }
+
+        .site-header :is(a, button):focus-visible,
+        .site-footer a:focus-visible {
+            outline: 2px solid var(--site-purple);
+            outline-offset: 3px;
+        }
+
+.site-main {
+    flex: 1;
+}
+
+    .site-main.container {
+        padding-block: 24px 32px;
+    }
+
+.site-footer {
+    border-top: 1px solid var(--site-border);
+    color: #53495e;
+    font-size: 0.875rem;
+}
+
+.site-footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding-block: 16px;
+}
+
+@media (max-width: 576px) {
+    .site-shell {
+        --site-gutter: 16px;
+    }
+}
