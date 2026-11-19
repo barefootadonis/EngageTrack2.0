@@ -213,6 +213,39 @@ namespace EngageTrack.Migrations
                         });
                 });
 
+            modelBuilder.Entity("EngageTrack.Slices.Models.GitHubActivity", b =>
+                {
+                    b.Property<int>("GitHubActivityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("GitHubActivityId"));
+
+                    b.Property<string>("ActivityType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("OccurredAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GitHubActivityId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GitHubActivities");
+                });
+
             modelBuilder.Entity("EngageTrack.Models.Group", b =>
                 {
                     b.HasOne("EngageTrack.Models.User", "Supervisor")
@@ -269,6 +302,17 @@ namespace EngageTrack.Migrations
                         .IsRequired();
 
                     b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("EngageTrack.Slices.Models.GitHubActivity", b =>
+                {
+                    b.HasOne("EngageTrack.Models.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
                 });
 #pragma warning restore 612, 618
         }
