@@ -1,5 +1,6 @@
 ﻿using EngageTrack.Models;
 using Microsoft.EntityFrameworkCore;
+using EngageTrack.Slices.Models;
 
 namespace EngageTrack.Data
 {
@@ -19,6 +20,12 @@ namespace EngageTrack.Data
                     membership.GroupId,
                     membership.StudentId
                 });
+
+            builder.Entity<GitHubActivity>()
+                .HasOne(activity => activity.Author)
+                .WithMany()
+                .HasForeignKey(activity => activity.UserId);
+
             builder.Entity<User>().HasData(
                 new User
                 {
@@ -77,5 +84,6 @@ namespace EngageTrack.Data
         public DbSet<GroupMembership> GroupMemberships { get; set; }
         public DbSet<GroupChangeRequest> GroupChangeRequests { get; set; }
         public DbSet<Timeline> Timelines { get; set; }
+        public DbSet<GitHubActivity> GitHubActivities { get; set; }
     }
 }
