@@ -1,0 +1,453 @@
+﻿@model EngageTrack.Models.GroupPreviewInput
+
+@{
+    ViewData["Title"] = "Edit Group Details";
+    ViewData["FullWidth"] = true;
+
+    var studentEditing = ViewData["StudentEditing"] is true;
+    var editAction = studentEditing ? "EditAsStudent" : "Edit";
+    var students = (IEnumerable<EngageTrack.Models.User>)ViewBag.Students;
+    var supervisors = (IEnumerable<EngageTrack.Models.User>)ViewBag.Supervisors;
+}
+
+<section class="student-dashboard group-edit" aria-labelledby="dashboardTitle">
+    <div class="student-dashboard-panel">
+        <h1 id="dashboardTitle">Edit @Model.GroupName</h1>
+
+        <form id="groupEditForm" class="dashboard-group"
+              asp-controller="Groups" asp-action="@editAction"
+              asp-route-id="@Model.Id" method="post">
+
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
+            <div class="dashboard-group-grid">
+                <section aria-labelledby="groupMembersHeading">
+                    <h3 id="groupMembersHeading">Group Members</h3>
+
+                    <ul class="dashboard-members" id="editMembers">
+                        @for (var i = 0; i < Model.Members.Count; i++)
+                        {
+                            var member = Model.Members[i];
+
+                            <li data-edit-row>
+                                <strong>@member.Name</strong>
+                                <a href="mailto:@(member.Email)">@member.Email</a>
+                                <input asp-for="Members[i].Name" type="hidden" data-field="Name" />
+                                <input asp-for="Members[i].Email" type="hidden" data-field="Email" />
+
+                                <label class="group-field">
+                                    Project role
+                                    <input asp-for="Members[i].Role" data-field="Role" required />
+                                </label>
+
+                                @if (!studentEditing)
+                                {
+                                    <button type="button" class="group-edit-remove" data-remove
+                                            aria-label="Remove @member.Name">
+                                        <span aria-hidden="true">🗑</span> Remove
+                                    </button>
+                                }
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="group-field group-edit-add">
+                        <label for="editStudentSearch">Add a student</label>
+                        <div class="person-search">
+                            <input id="editStudentSearch" type="search" autocomplete="off"
+                                   placeholder="Find a student by name or email"
+                                   aria-describedby="editStudentStatus" />
+                            <ul id="editStudentResults" class="person-results"
+                                aria-label="Matching students" hidden></ul>
+                        </div>
+                        <p id="editStudentStatus" role="status"></p>
+                    </div>
+                </section>
+
+                <div class="dashboard-project">
+                    <div class="group-field">
+                        <label asp-for="GroupName">Group Name</label>
+                        <input asp-for="GroupName" required />
+                    </div>
+
+                    <div class="group-field">
+                        <label asp-for="ProjectName">Project Title</label>
+                        <input asp-for="ProjectName" required />
+                    </div>
+
+                    <div class="group-field">
+                        <label asp-for="ProjectSummary">Project Description</label>
+                        <textarea asp-for="ProjectSummary" rows="4" required></textarea>
+                    </div>
+
+                    <section aria-labelledby="supervisorHeading">
+                        <h3 id="supervisorHeading">Project Supervisor</h3>
+
+                        <input asp-for="SupervisorName" type="hidden" />
+                        <input asp-for="SupervisorEmail" type="hidden" />
+
+                        <div id="editSupervisorCard" hidden>
+                            <strong id="editSupervisorName" tabindex="-1"></strong><br />
+                            <a id="editSupervisorEmail"></a>
+
+                            @if (!studentEditing)
+                            {
+                                <br />
+                                <button type="button" class="group-edit-remove"
+                                        id="removeEditSupervisor">
+                                    <span aria-hidden="true">🗑</span> Remove supervisor
+                                </button>
+                            }
+                        </div>
+
+                        <div id="editSupervisorPickerArea" hidden>
+                            <div class="group-field">
+                                <label for="editSupervisorSearch">Add a supervisor</label>
+                                <div class="person-search">
+                                    <input id="editSupervisorSearch" type="search" autocomplete="off"
+                                           placeholder="Find a supervisor by name or email" />
+                                    <ul id="editSupervisorResults" class="person-results"
+                                        aria-label="Matching supervisors" hidden></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section aria-labelledby="timelineHeading">
+                        <h3 id="timelineHeading">Timeline</h3>
+
+                        <ul class="dashboard-members" id="editTimeline">
+                            @for (var i = 0; i < Model.Timeline.Count; i++)
+                            {
+                                <li data-edit-row>
+                                    <input asp-for="Timeline[i].TimelineId"
+                                           type="hidden" data-field="TimelineId" />
+
+                                    <label class="group-field">
+                                        Due date
+                                        <input asp-for="Timeline[i].Date" type="date"
+                                               data-field="Date" required />
+                                    </label>
+
+                                    <label class="group-field">
+                                        Timeline item
+                                        <input asp-for="Timeline[i].Description"
+                                               data-field="Description" required />
+                                    </label>
+
+                                    @if (!studentEditing)
+                                    {
+                                        <button type="button" class="group-edit-remove" data-remove>
+                                            <span aria-hidden="true">🗑</span> Remove timeline item
+                                        </button>
+                                    }
+                                </li>
+                            }
+                        </ul>
+
+                        <div class="dashboard-group-actions group-edit-add">
+                            <button type="button" id="addTimelineItem">+ Add timeline item</button>
+                        </div>
+                    </section>
+
+                    <div class="dashboard-group-actions">
+                        @if (studentEditing)
+                        {
+                            <a asp-controller="Students" asp-action="Index">Cancel</a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Groups" asp-action="Details"
+                               asp-route-id="@Model.Id">Cancel</a>
+                        }
+
+                        <button type="submit">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<template id="editStudentOptions">
+    @foreach (var student in students)
+    {
+        <span data-name="@student.UserName" data-email="@student.UserEmail"></span>
+    }
+</template>
+
+<template id="editSupervisorOptions">
+    @foreach (var supervisor in supervisors)
+    {
+        <span data-name="@supervisor.UserName" data-email="@supervisor.UserEmail"></span>
+    }
+</template>
+
+<template id="editMemberTemplate">
+    <li data-edit-row>
+        <strong data-member-name></strong>
+        <a data-member-email></a>
+        <input type="hidden" data-field="Name" />
+        <input type="hidden" data-field="Email" />
+
+        <label class="group-field">
+            Project role
+            <input type="text" data-field="Role" required />
+        </label>
+
+        @if (!studentEditing)
+        {
+            <button type="button" class="group-edit-remove" data-remove>
+                <span aria-hidden="true">🗑</span> Remove
+            </button>
+        }
+    </li>
+</template>
+
+<template id="editTimelineTemplate">
+    <li data-edit-row>
+        <label class="group-field">
+            Due date
+            <input type="date" data-field="Date" required />
+        </label>
+
+        <label class="group-field">
+            Timeline item
+            <input type="text" data-field="Description" required />
+        </label>
+
+        @if (!studentEditing)
+        {
+            <button type="button" class="group-edit-remove" data-remove>
+                <span aria-hidden="true">🗑</span> Remove timeline item
+            </button>
+        }
+    </li>
+</template>
+
+@section Scripts {
+    <script>
+        const editForm = document.getElementById("groupEditForm");
+        const members = document.getElementById("editMembers");
+        const timeline = document.getElementById("editTimeline");
+        const studentSearch = document.getElementById("editStudentSearch");
+        const supervisorSearch = document.getElementById("editSupervisorSearch");
+        const studentStatus = document.getElementById("editStudentStatus");
+        const memberTemplate = document.getElementById("editMemberTemplate");
+        const timelineTemplate = document.getElementById("editTimelineTemplate");
+        const addTimelineButton = document.getElementById("addTimelineItem");
+
+        const supervisorCard = document.getElementById("editSupervisorCard");
+        const supervisorPickerArea = document.getElementById("editSupervisorPickerArea");
+        const supervisorNameInput = editForm.elements.namedItem("SupervisorName");
+        const supervisorEmailInput = editForm.elements.namedItem("SupervisorEmail");
+        const supervisorNameText = document.getElementById("editSupervisorName");
+        const supervisorEmailLink = document.getElementById("editSupervisorEmail");
+        const removeSupervisorButton = document.getElementById("removeEditSupervisor");
+
+        function readPeople(templateId) {
+            const template = document.getElementById(templateId);
+
+            return Array.from(template.content.children, item => ({
+                name: item.dataset.name,
+                email: item.dataset.email ?? ""
+            }));
+        }
+
+        function connectSearch(search, resultsId, getChoices, selectPerson) {
+            const results = document.getElementById(resultsId);
+
+            function renderResults() {
+                const query = search.value.trim().toLowerCase();
+                results.replaceChildren();
+                results.hidden = !query || search.disabled;
+
+                if (results.hidden) {
+                    return;
+                }
+
+                const matches = getChoices().filter(person =>
+                    `${person.name} ${person.email}`.toLowerCase().includes(query));
+
+                for (const person of matches) {
+                    const row = document.createElement("li");
+                    const details = document.createElement("div");
+                    const name = document.createElement("strong");
+                    name.textContent = person.name;
+                    details.append(name);
+
+                    if (person.email) {
+                        const email = document.createElement("small");
+                        email.textContent = person.email;
+                        details.append(email);
+                    }
+
+                    const addButton = document.createElement("button");
+                    addButton.type = "button";
+                    addButton.textContent = "Add";
+                    addButton.setAttribute("aria-label", `Add ${person.name}`);
+
+                    addButton.addEventListener("click", () => {
+                        const nextFocus = selectPerson(person);
+                        search.value = "";
+                        renderResults();
+                        (nextFocus ?? search).focus();
+                    });
+
+                    row.append(details, addButton);
+                    results.append(row);
+                }
+
+                if (matches.length === 0) {
+                    const empty = document.createElement("li");
+                    empty.textContent = "No matches found.";
+                    results.append(empty);
+                }
+            }
+
+            search.addEventListener("input", renderResults);
+
+            search.addEventListener("keydown", event => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    renderResults();
+                    results.querySelector("button")?.focus();
+                }
+
+                if (event.key === "Escape") {
+                    results.hidden = true;
+                }
+            });
+
+            return renderResults;
+        }
+
+        const studentOptions = readPeople("editStudentOptions");
+        const supervisorOptions = readPeople("editSupervisorOptions");
+
+        function availableStudents() {
+            const selectedEmails = new Set(
+                Array.from(members.querySelectorAll('[data-field="Email"]'),
+                    input => input.value.trim().toLowerCase())
+            );
+
+            return studentOptions.filter(student =>
+                !selectedEmails.has(student.email.trim().toLowerCase()));
+        }
+
+        function updateStudentLimit() {
+            const count = members.children.length;
+            studentSearch.disabled = count >= 5;
+            studentStatus.textContent = `${count} of 5 students added.`;
+        }
+
+        function addStudent(student) {
+            const row = memberTemplate.content.firstElementChild.cloneNode(true);
+            const emailLink = row.querySelector("[data-member-email]");
+
+            row.querySelector("[data-member-name]").textContent = student.name;
+            emailLink.textContent = student.email;
+            emailLink.href = `mailto:${student.email}`;
+            row.querySelector('[data-field="Name"]').value = student.name;
+            row.querySelector('[data-field="Email"]').value = student.email;
+            row.querySelector("[data-remove]")?.setAttribute(
+                "aria-label", `Remove ${student.name}`);
+
+            members.append(row);
+            updateStudentLimit();
+
+            return row.querySelector('[data-field="Role"]');
+        }
+
+        function showSupervisor() {
+            const hasSupervisor = Boolean(supervisorEmailInput.value.trim());
+            supervisorCard.hidden = !hasSupervisor;
+            supervisorPickerArea.hidden = hasSupervisor;
+            supervisorNameText.textContent = supervisorNameInput.value;
+            supervisorEmailLink.textContent = supervisorEmailInput.value;
+            supervisorEmailLink.href = `mailto:${supervisorEmailInput.value}`;
+        }
+
+        function addSupervisor(supervisor) {
+            supervisorNameInput.value = supervisor.name;
+            supervisorEmailInput.value = supervisor.email;
+            showSupervisor();
+
+            return removeSupervisorButton ?? supervisorNameText;
+        }
+
+        const renderStudentResults = connectSearch(
+            studentSearch, "editStudentResults", availableStudents, addStudent
+        );
+
+        const renderSupervisorResults = connectSearch(
+            supervisorSearch, "editSupervisorResults", () => supervisorOptions, addSupervisor
+        );
+
+        removeSupervisorButton?.addEventListener("click", () => {
+            supervisorNameInput.value = "";
+            supervisorEmailInput.value = "";
+            supervisorSearch.value = "";
+            showSupervisor();
+            renderSupervisorResults();
+            supervisorSearch.focus();
+        });
+
+        editForm.addEventListener("click", event => {
+            const removeButton = event.target.closest("[data-remove]");
+
+            if (!removeButton) {
+                return;
+            }
+
+            const row = removeButton.closest("[data-edit-row]");
+            const removingStudent = row.parentElement === members;
+            row.remove();
+
+            if (removingStudent) {
+                updateStudentLimit();
+                renderStudentResults();
+                studentSearch.focus();
+            } else {
+                addTimelineButton.focus();
+            }
+        });
+
+        addTimelineButton.addEventListener("click", () => {
+            const row = timelineTemplate.content.firstElementChild.cloneNode(true);
+            timeline.append(row);
+            row.querySelector("input").focus();
+        });
+
+        function updateFieldNames(list, collectionName) {
+            Array.from(list.children).forEach((row, index) => {
+                row.querySelectorAll("[data-field]").forEach(input => {
+                    input.name = `${collectionName}[${index}].${input.dataset.field}`;
+                });
+            });
+        }
+
+        editForm.addEventListener("submit", event => {
+            if (members.children.length < 2) {
+                event.preventDefault();
+                studentStatus.textContent = "Add at least two students before saving.";
+                studentSearch.focus();
+                return;
+            }
+
+            if (!supervisorEmailInput.value.trim()) {
+                event.preventDefault();
+                supervisorSearch.setCustomValidity("Add a supervisor before saving.");
+                supervisorSearch.reportValidity();
+                supervisorSearch.setCustomValidity("");
+                return;
+            }
+
+            updateFieldNames(members, "Members");
+            updateFieldNames(timeline, "Timeline");
+        });
+
+        updateStudentLimit();
+        showSupervisor();
+    </script>
+}

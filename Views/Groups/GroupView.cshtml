@@ -1,0 +1,108 @@
+﻿@model EngageTrack.Models.GroupPreviewInput
+
+@{
+    ViewData["Title"] = Model.GroupName;
+    ViewData["FullWidth"] = true;
+}
+
+<section class="student-dashboard" aria-labelledby="dashboardTitle">
+    <div class="student-dashboard-panel">
+        <h1 id="dashboardTitle">@Model.GroupName</h1>
+
+        @if (ViewData["PreviewMessage"] is string message)
+        {
+            <p role="status">@message</p>
+        }
+
+        <div class="dashboard-group">
+            <div class="dashboard-group-grid">
+                <section aria-labelledby="groupMembersHeading">
+                    <h3 id="groupMembersHeading">Group Members</h3>
+
+                    @if (Model.Members.Count == 0)
+                    {
+                        <p>No members</p>
+                    }
+                    else
+                    {
+                        <ul class="dashboard-members">
+                            @foreach (var member in Model.Members)
+                            {
+                                <li>
+                                    <strong>@member.Name</strong>
+                                    <span>@member.Role</span>
+                                    <a href="mailto:@(member.Email)">@member.Email</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </section>
+
+                <div class="dashboard-project">
+                    <section aria-labelledby="projectHeading">
+                        <h3 id="projectHeading">@Model.ProjectName</h3>
+                        <p>@Model.ProjectSummary</p>
+                    </section>
+
+                    <section aria-labelledby="supervisorHeading">
+                        <h3 id="supervisorHeading">Project Supervisor</h3>
+
+                        @if (string.IsNullOrWhiteSpace(Model.SupervisorName))
+                        {
+                            <p>No supervisor assigned</p>
+                        }
+                        else
+                        {
+                            <strong>@Model.SupervisorName</strong><br />
+                            <a href="mailto:@(Model.SupervisorEmail)">@Model.SupervisorEmail</a>
+                        }
+                    </section>
+
+                    <section aria-labelledby="timelineHeading">
+                        <h3 id="timelineHeading">Timeline</h3>
+
+                        @if (Model.Timeline.Count == 0)
+                        {
+                            <p>No timeline items</p>
+                        }
+                        else
+                        {
+                            <ul class="dashboard-timeline">
+                                @foreach (var item in Model.Timeline)
+                                {
+                                    <li>
+                                        <time datetime="@item.Date">@item.Date</time> — @item.Description
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </section>
+
+                    @if (ViewData["PreviewToken"] is System.Guid previewToken)
+                {
+                    <form class="dashboard-group-actions"
+                          asp-controller="Groups" asp-action="Save"
+                          asp-route-id="@Model.Id" method="post">
+                        <input type="hidden" name="previewToken" value="@previewToken" />
+
+                        <a asp-controller="Groups" asp-action="Details"
+                           asp-route-id="@Model.Id">Cancel Preview</a>
+
+                        <button type="submit">Save Changes</button>
+                    </form>
+                }
+                else
+                {
+                    <div class="dashboard-group-actions">
+                        <button type="button" disabled>Group Engagement Activity</button>
+                        <button type="button" disabled>Deactivate Group</button>
+
+                        <a asp-controller="Groups" asp-action="Edit"
+                           asp-route-id="@Model.Id">Edit Group Details</a>
+                    </div>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

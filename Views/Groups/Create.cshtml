@@ -1,46 +1,350 @@
-﻿@{
+﻿@model EngageTrack.Models.CreateGroupInput
+
+@{
     ViewData["Title"] = "Create Group";
     ViewData["FullWidth"] = true;
+
+    var students = (IEnumerable<EngageTrack.Models.User>)ViewBag.Students;
+    var supervisors = (IEnumerable<EngageTrack.Models.User>)ViewBag.Supervisors;
 }
 
 <section class="group-card">
     <h1>Group Creation Form</h1>
 
-    <form class="group-form">
+    <form id="createGroupForm" class="group-form"
+          asp-controller="Groups" asp-action="Create" method="post" data-current-student-id="@ViewBag.CurrentStudentId">
+
+        <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
         <div class="group-field">
             <label for="groupName">Group Name</label>
-            <input id="groupName" name="GroupName"
-                   class="group-short" type="text" required />
+            <input asp-for="GroupName" id="groupName"
+                   class="group-short" required />
+        </div>
+
+        <div class="group-field">
+            <label for="projectName">Project Name</label>
+            <input asp-for="ProjectName" id="projectName"
+                   class="group-project-width" required />
         </div>
 
         <div class="group-field">
             <label for="projectSummary">Project Summary</label>
-            <textarea id="projectSummary" name="ProjectSummary" rows="4"></textarea>
+            <textarea asp-for="ProjectSummary" id="projectSummary"
+                      class="group-project-width" rows="4" required></textarea>
         </div>
 
         <div class="group-field">
-            <label for="member">Group Members</label>
-            <select id="member" class="group-short">
-                <option value="">Select a member</option>
-                <option value="1">Alex Morgan</option>
-                <option value="2">Sam Patel</option>
-            </select>
+            <label for="memberSearch">Group Members</label>
 
-            <label for="projectRole">Project Role</label>
-            <input id="projectRole" class="group-short" type="text"
-                   placeholder="e.g. Developer" />
+            <div class="person-search">
+                <input id="memberSearch" type="search" autocomplete="off"
+                       placeholder="Find a student by name or email"
+                       aria-describedby="memberCount" />
+                <ul id="memberResults" class="person-results"
+                    aria-label="Matching students" hidden></ul>
+            </div>
+
+            <small id="memberCount" role="status">0 of 5 members added</small>
+            <div id="selectedMembers"></div>
         </div>
 
         <div class="group-field">
-            <label for="supervisor">Project Supervisor</label>
-            <select id="supervisor" name="SupervisorId" class="group-short">
-                <option value="">Select a supervisor</option>
-                <option value="1">Dr Taylor</option>
-            </select>
+            <label for="supervisorSearch">Project Supervisor</label>
+
+            <div class="person-search">
+                <input id="supervisorSearch" type="search" autocomplete="off"
+                       placeholder="Find a supervisor by name" />
+                <ul id="supervisorResults" class="person-results"
+                    aria-label="Matching supervisors" hidden></ul>
+            </div>
+
+            <input asp-for="SupervisorId" type="hidden" id="supervisorId" />
+            <div id="selectedSupervisor" role="status"></div>
         </div>
 
         <div class="group-actions">
-            <button type="button">Create Group</button>
+            <button type="submit">Create Group</button>
         </div>
     </form>
 </section>
+
+<template id="studentOptions">
+    @foreach (var student in students)
+    {
+        <span data-person-id="@student.UserId"
+              data-name="@student.UserName"
+              data-email="@student.UserEmail"></span>
+    }
+</template>
+
+<template id="supervisorOptions">
+    @foreach (var supervisor in supervisors)
+    {
+        <span data-person-id="@supervisor.UserId"
+              data-name="@supervisor.UserName"></span>
+    }
+</template>
+
+<template id="previousMembers">
+    @foreach (var member in Model.Members)
+    {
+        <span data-student-id="@member.StudentId"
+              data-role="@member.StudentJob"></span>
+    }
+</template>
+
+<template id="memberTemplate">
+    <div class="selected-member">
+        <strong data-name></strong>
+        <span data-email></span>
+        <span class="role-badge" data-role-badge hidden></span>
+
+        <input type="hidden" data-student-id />
+
+        <label data-role-field hidden>
+            Project role
+            <input type="text" data-role placeholder="e.g. Developer" />
+        </label>
+
+        <div class="member-actions">
+            <button type="button" class="member-link"
+                    data-add-role aria-expanded="false">
+                Add role
+            </button>
+            <button type="button" class="member-link" data-remove>Remove</button>
+        </div>
+    </div>
+</template>
+
+@section Scripts {
+    <script>
+        const form = document.getElementById("createGroupForm");
+        const memberSearch = document.getElementById("memberSearch");
+        const supervisorSearch = document.getElementById("supervisorSearch");
+        const memberList = document.getElementById("selectedMembers");
+        const memberCount = document.getElementById("memberCount");
+        const memberTemplate = document.getElementById("memberTemplate");
+        const supervisorId = document.getElementById("supervisorId");
+        const selectedSupervisor = document.getElementById("selectedSupervisor");
+        const selectedStudents = new Set();
+
+        function readPeople(templateId) {
+            const template = document.getElementById(templateId);
+
+            return Array.from(template.content.children, item => ({
+                id: item.dataset.personId,
+                name: item.dataset.name,
+                email: item.dataset.email ?? ""
+            }));
+        }
+
+        const students = readPeople("studentOptions");
+        const supervisors = readPeople("supervisorOptions");
+
+        function connectSearch(search, resultsId, getChoices, selectPerson) {
+            const results = document.getElementById(resultsId);
+
+            function renderResults() {
+                const query = search.value.trim().toLowerCase();
+                results.replaceChildren();
+                results.hidden = !query || search.disabled;
+
+                if (results.hidden) {
+                    return;
+                }
+
+                const matches = getChoices().filter(person =>
+                    `${person.name} ${person.email}`.toLowerCase().includes(query));
+
+                for (const person of matches) {
+                    const row = document.createElement("li");
+                    const details = document.createElement("div");
+                    const name = document.createElement("strong");
+                    name.textContent = person.name;
+                    details.append(name);
+
+                    if (person.email) {
+                        const email = document.createElement("small");
+                        email.textContent = person.email;
+                        details.append(email);
+                    }
+
+                    const addButton = document.createElement("button");
+                    addButton.type = "button";
+                    addButton.textContent = "Add";
+                    addButton.setAttribute("aria-label", `Add ${person.name}`);
+
+                    addButton.addEventListener("click", () => {
+                        const nextFocus = selectPerson(person);
+                        search.value = "";
+                        renderResults();
+                        (nextFocus ?? search).focus();
+                    });
+
+                    row.append(details, addButton);
+                    results.append(row);
+                }
+
+                if (matches.length === 0) {
+                    const empty = document.createElement("li");
+                    empty.textContent = "No matches found.";
+                    results.append(empty);
+                }
+            }
+
+            search.addEventListener("input", renderResults);
+
+            search.addEventListener("keydown", event => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    renderResults();
+                    results.querySelector("button")?.focus();
+                }
+
+                if (event.key === "Escape") {
+                    results.hidden = true;
+                }
+            });
+
+            return renderResults;
+        }
+
+        function updateMembers() {
+            Array.from(memberList.children).forEach((row, index) => {
+                row.querySelector("[data-student-id]").name = `Members[${index}].StudentId`;
+                row.querySelector("[data-role]").name = `Members[${index}].StudentJob`;
+            });
+
+            memberSearch.disabled = selectedStudents.size >= 5;
+            memberCount.textContent = `${selectedStudents.size} of 5 members added`;
+        }
+
+        function addStudent(student, existingRole = "") {
+            if (selectedStudents.has(student.id) || selectedStudents.size >= 5) {
+                return;
+            }
+
+            const row = memberTemplate.content.firstElementChild.cloneNode(true);
+            row.querySelector("[data-remove]").hidden =
+                 student.id === form.dataset.currentStudentId;
+            const roleField = row.querySelector("[data-role-field]");
+            const roleInput = row.querySelector("[data-role]");
+            const roleBadge = row.querySelector("[data-role-badge]");
+            const roleButton = row.querySelector("[data-add-role]");
+
+            row.querySelector("[data-name]").textContent = student.name;
+            row.querySelector("[data-email]").textContent = student.email;
+            row.querySelector("[data-student-id]").value = student.id;
+            roleInput.value = existingRole;
+
+            function updateRole() {
+                const role = roleInput.value.trim();
+                roleBadge.hidden = !role;
+                roleBadge.textContent = role ? `Role: ${role}` : "";
+                roleButton.textContent = roleField.hidden
+                    ? (role ? "Edit role" : "Add role")
+                    : "Hide role field";
+            }
+
+            roleInput.addEventListener("input", updateRole);
+            roleButton.addEventListener("click", () => {
+                roleField.hidden = !roleField.hidden;
+                roleButton.setAttribute("aria-expanded", String(!roleField.hidden));
+                updateRole();
+
+                if (!roleField.hidden) {
+                    roleInput.focus();
+                }
+            });
+
+            row.querySelector("[data-remove]").addEventListener("click", () => {
+                selectedStudents.delete(student.id);
+                row.remove();
+                updateMembers();
+                refreshMemberResults();
+                memberSearch.focus();
+            });
+
+            selectedStudents.add(student.id);
+            memberList.append(row);
+            updateRole();
+            updateMembers();
+
+            return memberSearch.disabled ? roleButton : undefined;
+        }
+
+        function selectSupervisor(supervisor) {
+            supervisorId.value = supervisor?.id ?? "";
+            selectedSupervisor.textContent = supervisor?.name ?? "";
+        }
+
+        const refreshMemberResults = connectSearch(
+            memberSearch,
+            "memberResults",
+            () => students.filter(student => !selectedStudents.has(student.id)),
+            addStudent
+        );
+
+        connectSearch(
+            supervisorSearch,
+            "supervisorResults",
+            () => supervisors.filter(supervisor => supervisor.id !== supervisorId.value),
+            selectSupervisor
+        );
+
+        const previousMembers = document.getElementById("previousMembers");
+
+        for (const previous of previousMembers.content.children) {
+            const student = students.find(item => item.id === previous.dataset.studentId);
+
+            if (student) {
+                addStudent(student, previous.dataset.role);
+            }
+        }
+
+        selectSupervisor(supervisors.find(person => person.id === supervisorId.value));
+
+        form.addEventListener("submit", event => {
+            const memberRows = Array.from(memberList.children);
+
+            if (memberRows.length < 2 || memberRows.length > 5) {
+                event.preventDefault();
+                window.alert("Select between 2 and 5 students.");
+                memberSearch.focus();
+                return;
+            }
+
+            const missingRole = memberRows.find(row =>
+                !row.querySelector("[data-role]").value.trim());
+
+            if (missingRole) {
+                event.preventDefault();
+                window.alert("Enter a project role for each student.");
+
+                if (missingRole.querySelector("[data-role-field]").hidden) {
+                    missingRole.querySelector("[data-add-role]").click();
+                }
+
+                missingRole.querySelector("[data-role]").focus();
+                return;
+            }
+
+            if (!supervisorId.value) {
+                event.preventDefault();
+                window.alert("Search for a supervisor and click Add.");
+                supervisorSearch.focus();
+                return;
+            }
+
+            const confirmed = window.confirm(
+                `Create this group with ${memberRows.length} members and ` +
+                `${selectedSupervisor.textContent} as supervisor?`
+            );
+
+            if (!confirmed) {
+                event.preventDefault();
+            }
+        });
+    </script>
+}

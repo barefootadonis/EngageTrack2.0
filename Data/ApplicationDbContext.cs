@@ -57,6 +57,41 @@ namespace EngageTrack.Data
                 },
                 new User
                 {
+                    UserId = 1005,
+                    UserName = "Zara Adeyemi",
+                    UserEmail = "zara.adeyemi@gmail.com",
+                    UserRole = "Student"
+                },
+                new User
+                {
+                    UserId = 1006,
+                    UserName = "Noah Clarke",
+                    UserEmail = "noah.clarke@gmail.com",
+                    UserRole = "Student"
+                },
+                new User
+                {
+                    UserId = 1007,
+                    UserName = "Priya Shah",
+                    UserEmail = "priya.shah@gmail.com",
+                    UserRole = "Student"
+                },
+                new User
+                {
+                    UserId = 1008,
+                    UserName = "Ellis Thompson",
+                    UserEmail = "ellis.thompson@gmail.com",
+                    UserRole = "Student"
+                },
+                new User
+                {
+                    UserId = 1009,
+                    UserName = "Mina Hassan",
+                    UserEmail = "mina.hassan@gmail.com",
+                    UserRole = "Student"
+                },
+                new User
+                {
                     UserId = 2001,
                     UserName = "Hannah Reed",
                     UserEmail = "hannah.reed@gmail.com",
