@@ -85,6 +85,25 @@
             background: var(--group-purple-dark);
         }
 
+.group-form .group-actions {
+    justify-content: space-between;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    color: mediumpurple
+}
+    table th,
+    table td {
+        padding: 8px;
+        border-bottom: 1px solid var(--group-divider);
+    }
+
+body {
+    background-color: plum;
+}
+
 @media (max-width: 576px) {
     .group-card {
         padding-inline: 16px;

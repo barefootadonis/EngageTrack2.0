@@ -64,6 +64,34 @@ namespace EngageTrack.Migrations
                     b.HasIndex("SupervisorId");
 
                     b.ToTable("Groups");
+
+                    b.HasData(
+                        new
+                        {
+                            GroupId = 4001,
+                            CurrentMembers = 3,
+                            DateCreated = new DateTime(2026, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            GroupChangeRequest = false,
+                            GroupIsActive = true,
+                            GroupName = "Green Energy Team",
+                            MaxMembers = 5,
+                            ProjectName = "Campus Solar Tracker",
+                            ProjectSummary = "Designing a dashboard to monitor campus solar energy production.",
+                            SupervisorId = 2001
+                        },
+                        new
+                        {
+                            GroupId = 4002,
+                            CurrentMembers = 3,
+                            DateCreated = new DateTime(2026, 2, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            GroupChangeRequest = true,
+                            GroupIsActive = true,
+                            GroupName = "Access for All",
+                            MaxMembers = 5,
+                            ProjectName = "Accessible Campus Map",
+                            ProjectSummary = "Creating an accessible map of campus facilities and routes.",
+                            SupervisorId = 2002
+                        });
                 });
 
             modelBuilder.Entity("EngageTrack.Models.GroupChangeRequest", b =>
@@ -119,6 +147,38 @@ namespace EngageTrack.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("GroupMemberships");
+
+                    b.HasData(
+                        new
+                        {
+                            GroupId = 4001,
+                            StudentId = 1001
+                        },
+                        new
+                        {
+                            GroupId = 4001,
+                            StudentId = 1002
+                        },
+                        new
+                        {
+                            GroupId = 4001,
+                            StudentId = 1003
+                        },
+                        new
+                        {
+                            GroupId = 4002,
+                            StudentId = 1004
+                        },
+                        new
+                        {
+                            GroupId = 4002,
+                            StudentId = 1005
+                        },
+                        new
+                        {
+                            GroupId = 4002,
+                            StudentId = 1006
+                        });
                 });
 
             modelBuilder.Entity("EngageTrack.Models.Timeline", b =>
@@ -174,29 +234,43 @@ namespace EngageTrack.Migrations
                         new
                         {
                             UserId = 1001,
-                            UserEmail = "amara.okafor@gmail.com",
+                            UserEmail = "amara.okafor.student@mail.shu.ac.uk",
                             UserName = "Amara Okafor",
                             UserRole = "Student"
                         },
                         new
                         {
                             UserId = 1002,
-                            UserEmail = "jamie.patel@gmail.com",
+                            UserEmail = "jamie.patel.student@mail.shu.ac.uk",
                             UserName = "Jamie Patel",
                             UserRole = "Student"
                         },
                         new
                         {
                             UserId = 1003,
-                            UserEmail = "leila.morgan@gmail.com",
+                            UserEmail = "leila.morgan.student@mail.shu.ac.uk",
                             UserName = "Leila Morgan",
                             UserRole = "Student"
                         },
                         new
                         {
                             UserId = 1004,
-                            UserEmail = "theo.williams@gmail.com",
+                            UserEmail = "theo.williams.student@mail.shu.ac.uk",
                             UserName = "Theo Williams",
+                            UserRole = "Student"
+                        },
+                        new
+                        {
+                            UserId = 1005,
+                            UserEmail = "aisha.khan.student@mail.shu.ac.uk",
+                            UserName = "Aisha Khan",
+                            UserRole = "Student"
+                        },
+                        new
+                        {
+                            UserId = 1006,
+                            UserEmail = "oliver.james.student@mail.shu.ac.uk",
+                            UserName = "Oliver James",
                             UserRole = "Student"
                         },
                         new

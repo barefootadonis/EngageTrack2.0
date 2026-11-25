@@ -6,18 +6,22 @@
 <h2>My Groups</h2>
 <p><a asp-action="Create" class="btn btn-primary">Create New Group</a></p>
 
-<form method="get" asp-controller="Search" asp-action="Index">
-    <label for="searchTerm">Search Groups:</label>  
-    <input type="text" name="searchTerm" id="searchTerm" class="form-control" placeholder="Search groups..." />
+<form method="get" asp-controller="Supervisor" asp-action="Index">
+    <label for="searchTerm">Search Groups:</label>
+    <input type="text" name="searchTerm" id="searchTerm" class="form-control"
+           placeholder="Search groups..." value="@ViewData["SearchTerm"]" />
     <div class="form-check">
-        <label class="form-check-label" for="noActivity"> No Activity </label>
-        <input type="checkbox" name="noActivity" id="noActivity" class="form-check-input" value="@ViewData["CurrentFilter"]" />
+        <input type="checkbox" name="noActivity" id="noActivity" class="form-check-input" value="true"
+               checked="@(ViewData["NoActivity"] is true)" />
+        <label class="form-check-label" for="noActivity">No Activity</label>
     </div>
     <div class="form-check">
-        <label class="form-check-label" for="crf"> Has Change Request </label>
-        <input type="checkbox" name="crf" id="crf" class="form-check-input" value="@ViewData["CurrentFilter"]" />
+        <input type="checkbox" name="crf" id="crf" class="form-check-input" value="true"
+               checked="@(ViewData["Crf"] is true)" />
+        <label class="form-check-label" for="crf">Has Change Request</label>
     </div>
     <button type="submit" class="btn btn-primary">Apply Filters</button>
+    <a asp-controller="Supervisor" asp-action="Index" class="btn btn-secondary">Clear Filters</a>
 </form>
 
 <table class="table table-bordered table-striped">
