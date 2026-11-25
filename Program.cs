@@ -14,6 +14,8 @@ builder.Services.AddScoped<ApplicationDbContext>();
 string _GetConnStringName = builder.Configuration.GetConnectionString("DefaultConnectionMySQL");
 builder.Services.AddDbContext<ApplicationDbContext>(options=>options.UseMySql(_GetConnStringName, ServerVersion.AutoDetect(_GetConnStringName)));
 
+builder.Services.AddScoped<EngageTrack.Services.CurrentStudent>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

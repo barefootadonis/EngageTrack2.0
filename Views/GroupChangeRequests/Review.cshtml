@@ -1,0 +1,49 @@
+﻿@model IReadOnlyList<EngageTrack.Models.GroupChangeRequestRow>
+
+@{
+    ViewData["Title"] = "Review Group Change Requests";
+    ViewData["FullWidth"] = true;
+}
+
+<section class="group-card request-page">
+    <h1>Group Change Requests</h1>
+
+    <div class="group-form">
+        @if (TempData["GroupChangeMessage"] is string message)
+        {
+            <p role="status">@message</p>
+        }
+
+        @if (Model.Count == 0)
+        {
+            <p>No pending group change requests.</p>
+        }
+
+        @foreach (var request in Model)
+        {
+            <article class="request-card">
+                <h2>@request.StudentName</h2>
+                <a href="mailto:@(request.StudentEmail)">@request.StudentEmail</a>
+                <p>@request.GroupName · @request.DateSubmitted.ToString("d MMM yyyy")</p>
+
+                <p><strong>Reason</strong></p>
+                <p class="request-text">@request.Reason</p>
+
+                <form asp-controller="GroupChangeRequests" asp-action="Decide"
+                      asp-route-id="@request.RequestId" method="post"
+                      class="request-form">
+                    <div class="group-field">
+                        <label for="notes-@request.RequestId">Additional Notes</label>
+                        <textarea id="notes-@request.RequestId" name="notes"
+                                  rows="2" maxlength="1000"></textarea>
+                    </div>
+
+                    <div class="dashboard-group-actions request-actions">
+                        <button type="submit" name="decision" value="Accepted">Accept</button>
+                        <button type="submit" name="decision" value="Rejected">Reject</button>
+                    </div>
+                </form>
+            </article>
+        }
+    </div>
+</section>
