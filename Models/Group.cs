@@ -14,11 +14,13 @@ namespace EngageTrack.Models
         public string? ProjectSummary { get; set; }
 
         public int MaxMembers { get; set; } = 5;
+        public int CurrentMembers { get; set; }
 
         public int? SupervisorId { get; set; }
         public User? Supervisor { get; set; }
 
         public bool GroupIsActive { get; set; } = true;
+        public bool GroupChangeRequest { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
     }
 }

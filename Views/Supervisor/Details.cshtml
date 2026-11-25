@@ -1,55 +1,39 @@
-﻿@{
+﻿@model EngageTrack.Models.Group
+
+@{
     ViewData["Title"] = "View Group";
     ViewData["FullWidth"] = true;
 }
 
-<header> Engage Track 2.0 </header>
-<section class="group-card">
-    <h1>Group Details</h1>
-        <div class="group-field">
-            <label for="groupName">Group Name</label>
-            foreach (var group in Model.SupervisorGroups)
-            {
-                <input id="groupName" name="GroupName"
-                       class="group-short" type="text" value="@group.GroupName" readonly />
-            }
-        </div>
-        <div class="group-field">
-            <label for="projectSummary">Project Summary</label>
-            <textarea id="projectSummary" name="ProjectSummary" rows="4" readonly>@Model.ProjectSummary</textarea>
-        </div>
-        <div class="group-field">
-            <label for="member">Group Members</label>
-        if (Model.Members == null || !Model.Members.Any())
-        {
-        <p>No members in this group.</p>
-        }
-        else
-        {
-        <ul id="member" class="group-short">
-            @foreach (var member in Model.Members)
-            {
-                <li>@member.FullName</li>
-            }
-        </ul>
-        }
-            <ul id="member" class="group-short">
-                @foreach (var member in Model.Members)
-                {
-                    <li>@member.FullName</li>
-                }
-            </ul>
-        </div>
-        <div class="max-members">
-            <label for="maxMembers">Maximum Members</label>
-            <input id="maxMembers" name="MaxMembers"
-                   class="group-short" type="number" value="@Model.MaxMembers" readonly />
-        </div>
-        <div class="group-field">
-            <label for="supervisor">Project Supervisor</label>
-            <input id="supervisor" name="Supervisor"
-                   class="group-short" type="text" value="@Model.Supervisor?.FullName" readonly />
-        </div>
-    </section>
+<h2>Group Details</h2>
 
-  
+<div class="group-details">
+    <div class="group-details-header">
+        <h4>@Model.GroupName</h4>
+    </div>
+    <div class="group-details-body">
+        <dl class="row">
+            <dt class="col-sm-2">Group ID:</dt>
+            <dd class="col-sm-10">@Model.GroupId</dd>
+
+            <dt class="col-sm-2">Project:</dt>
+            <dd class="col-sm-10">@Model.ProjectName</dd>
+
+            <dt class="col-sm-2">Project Summary:</dt>
+            <dd class="col-sm-10">@Model.ProjectSummary</dd>
+
+            <dt class="col-sm-2">Current Members:</dt>
+            <dd class="col-sm-10">@Model.CurrentMembers</dd>
+
+            <dt class="col-sm-2">Max Members:</dt>
+            <dd class="col-sm-10">@Model.MaxMembers</dd>
+
+            <dt class="col-sm-2">Change Request:</dt>
+            <dd class="col-sm-10">@(Model.GroupChangeRequest ? "Yes" : "No")</dd>
+
+            <dt class="col-sm-2">Active:</dt>
+            <dd class="col-sm-10">@(Model.GroupIsActive ? "Yes" : "No")</dd>
+        </dl>
+    </div>
+</div>
+<br /><a asp-action="Index" class="btn btn-secondary">Back to Groups</a>

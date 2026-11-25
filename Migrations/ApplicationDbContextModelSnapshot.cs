@@ -30,8 +30,14 @@ namespace EngageTrack.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("GroupId"));
 
+                    b.Property<int>("CurrentMembers")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("GroupChangeRequest")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("GroupIsActive")
                         .HasColumnType("tinyint(1)");
@@ -39,6 +45,9 @@ namespace EngageTrack.Migrations
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("MaxMembers")
+                        .HasColumnType("int");
 
                     b.Property<string>("ProjectName")
                         .IsRequired()

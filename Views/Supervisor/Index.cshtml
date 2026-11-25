@@ -1,0 +1,51 @@
+﻿@model IEnumerable<EngageTrack.Models.Group>
+@{
+    ViewData["Title"] = "My Groups";
+}
+
+<h2>My Groups</h2>
+<p><a asp-action="Create" class="btn btn-primary">Create New Group</a></p>
+
+<form method="get" asp-controller="Search" asp-action="Index">
+    <label for="searchTerm">Search Groups:</label>  
+    <input type="text" name="searchTerm" id="searchTerm" class="form-control" placeholder="Search groups..." />
+    <div class="form-check">
+        <label class="form-check-label" for="noActivity"> No Activity </label>
+        <input type="checkbox" name="noActivity" id="noActivity" class="form-check-input" value="@ViewData["CurrentFilter"]" />
+    </div>
+    <div class="form-check">
+        <label class="form-check-label" for="crf"> Has Change Request </label>
+        <input type="checkbox" name="crf" id="crf" class="form-check-input" value="@ViewData["CurrentFilter"]" />
+    </div>
+    <button type="submit" class="btn btn-primary">Apply Filters</button>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Group Name</th>
+            <th>Members</th>
+            <th>Max Members</th>
+            <th>Project Summary</th>
+            <th>CRF</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in Model)
+        {
+            <tr>
+                <td>@group.GroupName</td>
+                <td>@group.CurrentMembers</td>
+                <td>@group.MaxMembers</td>
+                <td>@group.ProjectSummary</td>
+                <td>@(group.GroupChangeRequest ? "Yes" : "No")</td>
+                <td>@(group.GroupIsActive ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@group.GroupId" class="btn btn-info">View Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

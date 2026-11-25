@@ -13,6 +13,12 @@ namespace EngageTrack.Models
             _context = context;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            var groups = await _context.Groups.ToListAsync();
+            return View(groups);
+        }
+
         public async Task<IActionResult> Details(int id)
         {
             var group = await _context.Groups

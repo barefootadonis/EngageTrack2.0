@@ -20,3 +20,7 @@ namespace EngageTrack.Migrations
         }
     }
 }
+
+//^ [a - z0 - 9._] + @hallam\.shu\.ac\.uk$
+//^[a-z0-9._]+@student\.shu\.ac\.uk$
+//^[a-z0-9._]+@student\.shu\.ac\.uk$
