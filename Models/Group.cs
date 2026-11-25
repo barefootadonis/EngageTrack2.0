@@ -13,6 +13,8 @@ namespace EngageTrack.Models
 
         public string? ProjectSummary { get; set; }
 
+        public int MaxMembers { get; set; } = 5;
+
         public int? SupervisorId { get; set; }
         public User? Supervisor { get; set; }
 
