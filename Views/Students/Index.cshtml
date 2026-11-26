@@ -1,0 +1,93 @@
+﻿@model EngageTrack.Models.StudentDashboardViewModel
+
+@{
+    ViewData["Title"] = "Student Dashboard";
+    ViewData["FullWidth"] = true;
+    var group = Model.ActiveGroup;
+}
+
+<section class="student-dashboard" aria-labelledby="dashboardTitle">
+    <div class="student-dashboard-panel">
+        <h1 id="dashboardTitle">
+            Welcome,<br />
+            @Model.StudentName
+        </h1>
+        @if (TempData["GroupCreated"] is string message)
+                {
+                    <p role="status">@message</p>
+                }
+
+        @if (group is null)
+        {
+            <div class="student-dashboard-empty">
+                <p>No active groups</p>
+            </div>
+        }
+        else
+        {
+            <div class="dashboard-group">
+                <h2 class="dashboard-group-title">@group.GroupName</h2>
+
+                <div class="dashboard-group-grid">
+                    <section aria-labelledby="groupMembersHeading">
+                        <h3 id="groupMembersHeading">Group Members</h3>
+
+                        <ul class="dashboard-members">
+                            @foreach (var member in group.Members)
+                            {
+                                <li>
+                                    <strong>@member.Name</strong>
+                                    <span>@member.Role</span>
+                                    <a href="mailto:@(member.Email)">@member.Email</a>
+                                </li>
+                            }
+                        </ul>
+                    </section>
+
+                    <div class="dashboard-project">
+                        <section aria-labelledby="projectHeading">
+                            <h3 id="projectHeading">@group.ProjectName</h3>
+                            <p>@group.ProjectSummary</p>
+                        </section>
+
+                        <section aria-labelledby="supervisorHeading">
+                            <h3 id="supervisorHeading">Project Supervisor</h3>
+                            <strong>@group.SupervisorName</strong><br />
+                            <a href="mailto:@(group.SupervisorEmail)">@group.SupervisorEmail</a>
+                        </section>
+
+                        <section aria-labelledby="timelineHeading">
+                            <h3 id="timelineHeading">Timeline</h3>
+                            <ul class="dashboard-timeline">
+                                @foreach (var item in group.Timeline)
+                                {
+                                    <li>@item</li>
+                                }
+                            </ul>
+                        </section>
+
+                        <div class="dashboard-group-actions">
+                            <button type="button" disabled>Support Request</button>
+                            <a asp-controller="GroupChangeRequests" asp-action="Index">
+                                Group Change Request
+                            </a>
+                            <a asp-controller="Groups" asp-action="EditAsStudent"
+                               asp-route-id="@group.GroupId">
+                                Edit Group Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (group is null)
+    {
+        <a class="student-dashboard-create"
+           asp-controller="Groups" asp-action="Create">
+            <span aria-hidden="true">+</span>
+            Create Group
+        </a>
+    }
+</section>

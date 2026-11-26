@@ -1,0 +1,91 @@
+﻿@model EngageTrack.Models.StudentGroupChangePage
+
+@{
+    ViewData["Title"] = "Group Change Requests";
+    ViewData["FullWidth"] = true;
+}
+
+<section class="group-card request-page">
+    <h1>Group Change Request Form</h1>
+
+    <div class="group-form">
+        @if (TempData["GroupChangeMessage"] is string message)
+        {
+            <p role="status">@message</p>
+        }
+
+        @if (Model.HasPendingRequest)
+        {
+            <p>You already have a pending request. You can withdraw it below.</p>
+        }
+        else if (Model.ActiveGroupName is null)
+        {
+            <p>You need an active group to request a group change.</p>
+        }
+        else
+        {
+            <form asp-controller="GroupChangeRequests" asp-action="Submit"
+                  method="post" class="request-form">
+                <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
+                <div class="group-field">
+                    <label for="requestStudent">Name</label>
+                    <input id="requestStudent" value="@Model.StudentName" readonly />
+                </div>
+
+                <div class="group-field">
+                    <label for="requestGroup">Current Group</label>
+                    <input id="requestGroup" value="@Model.ActiveGroupName" readonly />
+                </div>
+
+                <div class="group-field">
+                    <label for="requestReason">Reason</label>
+                    <textarea id="requestReason" name="reason" rows="4"
+                              maxlength="1000" required>@(ViewData["Reason"])</textarea>
+                </div>
+
+                <div class="group-actions">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        }
+
+        <section aria-labelledby="requestHistoryHeading">
+            <h2 id="requestHistoryHeading">Request History</h2>
+
+            @if (Model.Requests.Count == 0)
+            {
+                <p>You haven’t submitted a group change request yet.</p>
+            }
+
+            @foreach (var request in Model.Requests)
+            {
+                <article class="request-card">
+                    <h3>@request.GroupName</h3>
+                    <p>
+                        <strong>@request.Status</strong> ·
+                        @request.DateSubmitted.ToString("d MMM yyyy")
+                    </p>
+                    <p class="request-text">@request.Reason</p>
+
+                    @if (!string.IsNullOrWhiteSpace(request.Notes))
+                    {
+                        <p><strong>Reviewer notes</strong></p>
+                        <p class="request-text">@request.Notes</p>
+                    }
+
+                    @if (request.Status == "Pending")
+                    {
+                        <form asp-controller="GroupChangeRequests" asp-action="Withdraw"
+                              asp-route-id="@request.RequestId" method="post"
+                              class="dashboard-group-actions request-actions">
+                            <button type="submit">Withdraw Request</button>
+                        </form>
+                    }
+                </article>
+            }
+        </section>
+
+        <a asp-controller="Students" asp-action="Index">Back to Student Dashboard</a>
+    </div>
+</section>

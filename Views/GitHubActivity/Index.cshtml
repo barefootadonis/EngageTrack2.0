@@ -1,0 +1,47 @@
+﻿@model IEnumerable<EngageTrack.Slices.Models.GitHubActivity>
+
+@{
+    ViewData["Title"] = "GitHub Activity";
+}
+
+<div class="container mt-4">
+    <h1>GitHub Activity</h1>
+
+    @if (Model == null || !Model.Any())
+    {
+        <p>No GitHub activity has been recorded yet.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Activity Type</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>GitHub Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var activity in Model)
+                {
+                    <tr>
+                        <td>@activity.ActivityType</td>
+                        <td>@activity.Title</td>
+                        <td>@activity.OccurredAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(activity.Url))
+                            {
+                                <a href="@activity.Url" target="_blank">View Activity</a>
+                            }
+                            else
+                            {
+                                <span>No link available</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

@@ -192,6 +192,41 @@ namespace EngageTrack.Migrations
                         },
                         new
                         {
+                            UserId = 1005,
+                            UserEmail = "zara.adeyemi@gmail.com",
+                            UserName = "Zara Adeyemi",
+                            UserRole = "Student"
+                        },
+                        new
+                        {
+                            UserId = 1006,
+                            UserEmail = "noah.clarke@gmail.com",
+                            UserName = "Noah Clarke",
+                            UserRole = "Student"
+                        },
+                        new
+                        {
+                            UserId = 1007,
+                            UserEmail = "priya.shah@gmail.com",
+                            UserName = "Priya Shah",
+                            UserRole = "Student"
+                        },
+                        new
+                        {
+                            UserId = 1008,
+                            UserEmail = "ellis.thompson@gmail.com",
+                            UserName = "Ellis Thompson",
+                            UserRole = "Student"
+                        },
+                        new
+                        {
+                            UserId = 1009,
+                            UserEmail = "mina.hassan@gmail.com",
+                            UserName = "Mina Hassan",
+                            UserRole = "Student"
+                        },
+                        new
+                        {
                             UserId = 2001,
                             UserEmail = "hannah.reed@gmail.com",
                             UserName = "Hannah Reed",
