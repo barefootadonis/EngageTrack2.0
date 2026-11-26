@@ -85,5 +85,6 @@ namespace EngageTrack.Data
         public DbSet<GroupChangeRequest> GroupChangeRequests { get; set; }
         public DbSet<Timeline> Timelines { get; set; }
         public DbSet<GitHubActivity> GitHubActivities { get; set; }
+        public DbSet<GitHubSyncStatus> GitHubSyncStatuses { get; set; }
     }
 }

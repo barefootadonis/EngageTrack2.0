@@ -246,6 +246,35 @@ namespace EngageTrack.Migrations
                     b.ToTable("GitHubActivities");
                 });
 
+            modelBuilder.Entity("EngageTrack.Slices.Models.GitHubSyncStatus", b =>
+                {
+                    b.Property<int>("GitHubSyncStatusId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("GitHubSyncStatusId"));
+
+                    b.Property<string>("ErrorMessage")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsConnected")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("LastSuccessfulSync")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("LastSyncSuccessful")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GitHubSyncStatusId");
+
+                    b.ToTable("GitHubSyncStatuses");
+                });
+
             modelBuilder.Entity("EngageTrack.Models.Group", b =>
                 {
                     b.HasOne("EngageTrack.Models.User", "Supervisor")
