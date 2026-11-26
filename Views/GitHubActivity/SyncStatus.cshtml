@@ -1,0 +1,48 @@
+﻿@model IEnumerable<EngageTrack.Slices.Models.GitHubSyncStatus>
+
+@{
+    ViewData["Title"] = "GitHub Synchronisation Status";
+    ViewData["FullWidth"] = true;
+}
+
+<section class="github-sync" aria-labelledby="githubSyncTitle">
+    <div class="github-sync-panel">
+        <h1 id="githubSyncTitle">GitHub Synchronisation Status</h1>
+
+        @if (Model == null || !Model.Any())
+        {
+            <p role="status">No GitHub synchronisation records found.</p>
+        }
+        else
+        {
+            <ul class="github-sync-list">
+                @foreach (var item in Model)
+                {
+                    <li>
+                        <strong>Student ID: @item.UserId</strong>
+
+                        <span>
+                            Connection:
+                            @(item.IsConnected ? "Connected" : "Not connected")
+                        </span>
+
+                        <span>
+                            Last sync:
+                            @(item.LastSyncSuccessful ? "Successful" : "Failed")
+                        </span>
+
+                        <span>
+                            Last successful sync:
+                            @(item.LastSuccessfulSync?.ToString("dd/MM/yyyy HH:mm") ?? "Never")
+                        </span>
+
+                        <span>
+                            Error:
+                            @(string.IsNullOrWhiteSpace(item.ErrorMessage) ? "None" : item.ErrorMessage)
+                        </span>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</section>

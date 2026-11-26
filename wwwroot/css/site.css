@@ -505,3 +505,187 @@
 .request-actions {
     justify-content: flex-end;
 }
+
+
+/* GitHub Activity page, Hammaad */
+.github-activity {
+    --github-purple: #532a82;
+    --github-dark-purple: #3e1c66;
+    --github-lavender: #eee5f7;
+    --github-border: #ac96bf;
+    margin: 4px 32px 32px;
+}
+
+.github-activity-panel {
+    display: grid;
+    gap: 24px;
+    padding: 24px 32px 32px;
+    border-radius: 20px;
+    background: var(--github-lavender);
+}
+
+    .github-activity-panel h1 {
+        margin: 0;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--github-border);
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 400;
+    }
+
+    .github-activity-panel h2 {
+        margin: 0 0 12px;
+        color: var(--github-dark-purple);
+        font-size: 1.25rem;
+    }
+
+    .github-activity-panel p {
+        margin: 6px 0;
+    }
+
+.github-back {
+    justify-self: start;
+    color: var(--github-purple);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .github-back:hover {
+        text-decoration: underline;
+    }
+
+.github-account,
+.github-stat,
+.github-recent {
+    padding: 20px;
+    border: 1px solid var(--github-border);
+    border-radius: 16px;
+    background: #fff;
+}
+
+.github-account-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.github-status {
+    font-weight: 700;
+}
+
+.github-status-connected {
+    color: #176b36;
+}
+
+.github-status-disconnected,
+.github-status-failed {
+    color: #a12626;
+}
+
+.github-error {
+    color: #a12626;
+    font-weight: 600;
+}
+
+.github-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.github-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 10px 20px;
+    border: 2px solid var(--github-purple);
+    border-radius: 12px;
+    background: var(--github-purple);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .github-button:hover {
+        background: var(--github-dark-purple);
+        color: #fff;
+    }
+
+.github-button-secondary {
+    background: #fff;
+    color: var(--github-purple);
+}
+
+    .github-button-secondary:hover {
+        background: var(--github-purple);
+        color: #fff;
+    }
+
+.github-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.github-stat {
+    text-align: center;
+}
+
+    .github-stat strong {
+        display: block;
+        color: var(--github-purple);
+        font-size: 2rem;
+    }
+
+.github-activity-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .github-activity-list li {
+        display: grid;
+        gap: 6px;
+        padding: 14px;
+        border: 1px solid var(--github-border);
+        border-radius: 12px;
+        background: #fff;
+        overflow-wrap: anywhere;
+    }
+
+    .github-activity-list a {
+        color: var(--github-purple);
+        font-weight: 600;
+    }
+
+.github-activity-panel :is(a, button):focus-visible {
+    outline: 3px solid var(--github-purple);
+    outline-offset: 3px;
+}
+
+@media (max-width: 576px) {
+    .github-activity {
+        margin: 4px 16px 24px;
+    }
+
+    .github-activity-panel {
+        padding: 18px 16px 24px;
+        gap: 18px;
+    }
+
+    .github-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .github-actions form {
+        display: contents;
+    }
+
+}

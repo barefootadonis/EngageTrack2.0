@@ -1,47 +1,142 @@
-﻿@model IEnumerable<EngageTrack.Slices.Models.GitHubActivity>
+﻿@model EngageTrack.Slices.Models.GitHubActivityViewModel
 
 @{
     ViewData["Title"] = "GitHub Activity";
+    ViewData["FullWidth"] = true;
 }
 
-<div class="container mt-4">
-    <h1>GitHub Activity</h1>
+<section class="github-activity">
+    <div class="github-activity-panel">
+        <a class="github-back" href="#" onclick="history.back(); return false;">
+            ← Back to Home
+        </a>
 
-    @if (Model == null || !Model.Any())
-    {
-        <p>No GitHub activity has been recorded yet.</p>
-    }
-    else
-    {
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Activity Type</th>
-                    <th>Title</th>
-                    <th>Date</th>
-                    <th>GitHub Link</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var activity in Model)
+        <h1>GitHub Activity</h1>
+
+        <p>Connect your GitHub account and view your project activity.</p>
+
+        <section class="github-account" aria-labelledby="githubAccountHeading">
+            <div class="github-account-heading">
+                <h2 id="githubAccountHeading">GitHub Account</h2>
+
+                @if (Model.SyncStatus?.IsConnected == true)
                 {
-                    <tr>
-                        <td>@activity.ActivityType</td>
-                        <td>@activity.Title</td>
-                        <td>@activity.OccurredAt.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>
+                    <span class="github-status github-status-connected">
+                        Connected
+                    </span>
+                }
+                else
+                {
+                    <span class="github-status github-status-disconnected">
+                        Not connected
+                    </span>
+                }
+            </div>
+
+            @if (Model.SyncStatus == null)
+            {
+                <p>No GitHub connection information available.</p>
+            }
+            else
+            {
+                <p>
+                    Synchronisation:
+                    <strong class="github-status @(Model.SyncStatus.LastSyncSuccessful ? "github-status-connected" : "github-status-failed")">
+                        @(Model.SyncStatus.LastSyncSuccessful ? "Successful" : "Failed")
+                    </strong>
+                </p>
+
+                <p>
+                    Last successful sync:
+                    @(Model.SyncStatus.LastSuccessfulSync?.ToString("dd/MM/yyyy HH:mm") ?? "Never")
+                </p>
+
+                @if (!string.IsNullOrWhiteSpace(Model.SyncStatus.ErrorMessage))
+                {
+                    <p class="github-error">
+                        Error: @Model.SyncStatus.ErrorMessage
+                    </p>
+                }
+            }
+        </section>
+
+            <div class="github-actions">
+                @if (Model.SyncStatus?.IsConnected == true)
+                {
+                    <form asp-action="Synchronise" method="post">
+                        <button type="submit" class="github-button">
+                            Synchronise GitHub
+                        </button>
+                    </form>
+
+                    <form asp-action="Disconnect" method="post">
+                        <button type="submit" class="github-button github-button-secondary">
+                            Disconnect GitHub
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="Connect" method="post">
+                        <button type="submit" class="github-button">
+                            Connect GitHub
+                        </button>
+                    </form>
+                }
+            </div>
+
+
+        <section aria-labelledby="githubOverviewHeading">
+            <h2 id="githubOverviewHeading">GitHub Overview</h2>
+
+            <div class="github-stats">
+                <div class="github-stat">
+                    <strong>@Model.CommitCount</strong>
+                    <span>Commits</span>
+                </div>
+
+                <div class="github-stat">
+                    <strong>@Model.PullRequestCount</strong>
+                    <span>Pull Requests</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="github-recent" aria-labelledby="githubRecentHeading">
+            <h2 id="githubRecentHeading">Recent GitHub Activity</h2>
+
+            @if (!Model.Activities.Any())
+            {
+                <p>No GitHub activity has been recorded yet.</p>
+            }
+            else
+            {
+                <ul class="github-activity-list">
+                    @foreach (var activity in Model.Activities)
+                    {
+                        <li>
+                            <strong>@activity.ActivityType</strong>
+                            <span>@activity.Title</span>
+
+                            <time datetime="@(activity.OccurredAt.ToString("yyyy-MM-ddTHH:mm:ss"))">
+                                @activity.OccurredAt.ToString("dd/MM/yyyy HH:mm")
+                            </time>
+
                             @if (!string.IsNullOrWhiteSpace(activity.Url))
                             {
-                                <a href="@activity.Url" target="_blank">View Activity</a>
+                                <a href="@activity.Url" target="_blank" rel="noopener noreferrer">
+                                    View Activity
+                                </a>
                             }
                             else
                             {
                                 <span>No link available</span>
                             }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-</div>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+    </div>
+</section>
+
